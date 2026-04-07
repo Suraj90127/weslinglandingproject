@@ -13,6 +13,9 @@ const playerRoutes = require('./routes/playerRoutes');
 const contentRoutes = require('./routes/contentRoutes');
 const authRoutes = require('./routes/authRoutes');
 const contactRoutes = require('./routes/contactRoutes');
+const dns = require("dns");
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
+
 
 
 // ===== DB CONNECT =====
