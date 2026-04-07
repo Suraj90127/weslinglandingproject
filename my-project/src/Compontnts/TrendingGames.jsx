@@ -53,7 +53,7 @@ const PlayerDisplay = ({ image, name }) => {
                     src={getImageUrl(image)}
                     alt={name || "TBD"}
                     loading="lazy"
-                    className="w-16 h-16 sm:w-20 md:w-28 h-16 sm:h-20 md:h-28 rounded-full object-cover border-2 sm:border-4 border-white/10 relative z-10 transition-all duration-500 group-hover/player:border-orange-500"
+                    className="w-16 h-16 sm:w-20 md:w-28 sm:h-20 md:h-28 rounded-full object-cover border-2 sm:border-4 border-white/10 relative z-10 transition-all duration-500 group-hover/player:border-orange-500"
                     onError={(e) => { e.target.src = getPlaceholderImage(); }}
                 />
             </div>
@@ -120,7 +120,7 @@ const TrendingGames = () => {
 
     return (
         <section className="relative py-12 sm:py-20 bg-[#0a0a0a] min-h-screen overflow-hidden text-white">
-            <BackgroundPulse />
+            {/* <BackgroundPulse /> */}
 
             <div className="container mx-auto px-4 relative z-10">
                 <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12 sm:mb-20 px-4">

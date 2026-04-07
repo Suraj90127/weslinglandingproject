@@ -131,7 +131,10 @@ const Event = () => {
                     animate={{ scale: 1 }}
                     transition={{ duration: 10, ease: "linear" }}
                     className="absolute inset-0 bg-cover bg-center opacity-40 grayscale-[0.5]"
-                    style={{ backgroundImage: `url(${heroBannerImage})` }}
+                      style={{ 
+    backgroundImage: `url(${heroBannerImage})`,
+    transform: "translateZ(0)" // GPU force
+  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-[#050505]" />
                 <div className="relative z-10 text-center px-4">
