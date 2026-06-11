@@ -14,7 +14,7 @@ import banner3 from "../assets/images/event_img/banner-image-3.jpg"
 import banner4 from "../assets/images/event_img/banner-image-4.jpeg"
 import banner5 from "../assets/images/event_img/banner-image-5.jpg"
 import banner6 from "../assets/images/event_img/banner-image-6.jpg"
-import bannerImg3 from "../assets/images/baner3.jpg"
+import bannerImg3 from "../assets/images/bannerrr.PNG"
 import Header from '../Compontnts/Header'
 import Footer from '../Compontnts/Footer'
 import { IoIosArrowDown } from 'react-icons/io'

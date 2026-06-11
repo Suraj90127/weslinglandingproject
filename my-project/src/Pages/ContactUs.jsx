@@ -4,7 +4,7 @@ import Header from "../Compontnts/Header";
 import Footer from "../Compontnts/Footer";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaPaperPlane, FaPlus, FaQuestionCircle, FaCheckCircle } from "react-icons/fa";
-import bannerImg3 from "../assets/images/baner3.jpg";
+import bannerImg3 from "../assets/images/bannerrr.PNG";
 import { fetchAllContent } from "../redux/slices/contentSlice";
 import { api } from "../redux/api";
 
