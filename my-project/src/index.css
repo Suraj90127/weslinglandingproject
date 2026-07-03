@@ -1,0 +1,131 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    /* Updated to a more modern, professional dark-mode stack */
+    @apply bg-[#050505] text-neutral-300;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* Smooth scrolling with offset for fixed headers */
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
+  }
+
+  /* Improved Typography Scaling */
+  h1, h2, h3, h4 {
+    @apply text-white font-black uppercase italic tracking-tighter;
+  }
+}
+
+@layer components {
+  .container-custom {
+    @apply max-w-7xl mx-auto px-6 lg:px-8;
+  }
+
+  .gradient-text {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-600 to-red-600;
+  }
+
+  /* High-Impact Primary Button */
+  .btn-primary {
+    @apply px-8 py-4 bg-orange-600 text-white font-[1000] uppercase italic tracking-widest 
+           rounded-2xl transition-all duration-300 transform active:scale-95 
+           hover:bg-orange-500 hover:shadow-[0_0_25px_rgba(234,88,12,0.4)];
+  }
+
+  .btn-secondary {
+    @apply px-8 py-4 border-2 border-white/10 text-white font-black uppercase italic 
+           tracking-widest rounded-2xl hover:bg-white hover:text-black transition-all duration-300;
+  }
+
+  /* Premium Glassmorphism */
+  .glass-effect {
+    @apply bg-neutral-900/40 backdrop-blur-xl border border-white/5;
+  }
+
+  /* Wrestling Card Hover */
+  .card-hover {
+    @apply transition-all duration-500 hover:border-orange-500/50 hover:-translate-y-3 hover:shadow-[0_20px_50px_rgba(0,0,0,0.7)];
+  }
+
+  /* AWE Neon Glow Utility */
+  .neon-glow {
+    box-shadow: 0 0 15px theme('colors.orange.600'), 0 0 5px theme('colors.orange.400');
+  }
+}
+
+/* --- Animations & Utilities --- */
+
+/* Modern Ring Loader */
+.loader {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border-top-color: #ea580c; /* orange-600 */
+  animation: rotation 0.8s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+@keyframes rotation {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Enhanced Font Clamping for Mobile Responsiveness */
+@layer utilities {
+  .text-responsive-h1 {
+    font-size: clamp(2.5rem, 10vw, 6rem);
+    line-height: 0.9;
+  }
+  
+  .text-responsive-h2 {
+    font-size: clamp(2rem, 8vw, 4rem);
+    line-height: 1;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Custom Scrollbar for Desktop */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-[#0a0a0a];
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-neutral-800 rounded-full border-2 border-[#0a0a0a] hover:bg-orange-600;
+}
+
+
+.stroke-text {
+  -webkit-text-stroke: 1px rgba(255,255,255,0.2);
+}
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+}
