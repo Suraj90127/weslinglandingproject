@@ -32,17 +32,16 @@ const Wrestlers = () => {
 
         let category = "All";
 
-        console.log("Player matchesWon:", player); // Debugging line
         const totalScore = player.matchesWon || 0;
 
         if (totalScore > 50) {
-            category = "Champions";
+            category = "Legends";
         }
         else if (totalScore > 20) {
-            category = "Rising Stars";
+            category = "Champions";
         }
         else {
-            category = "Legends";
+            category = "Rising Stars";
         }
 
         return {
@@ -69,8 +68,8 @@ const Wrestlers = () => {
 
     const categories = [
         { name: "All", icon: <FaUserFriends /> },
-        { name: "Champions", icon: <FaTrophy /> },
         { name: "Legends", icon: <FaStar /> },
+        { name: "Champions", icon: <FaTrophy /> },
         { name: "Rising Stars", icon: <FaMedal /> }
     ];
 
