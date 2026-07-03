@@ -324,7 +324,6 @@ const bannerSlice = createSlice({
         state.pageBanners = state.pageBanners.filter(
           (b) => b._id !== action.payload
         );
-        console.log("Banner deleted:", action.payload);
       })
       .addCase(deleteBanner.rejected, rejected);
   },

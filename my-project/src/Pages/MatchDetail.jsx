@@ -3,8 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import Header from '../Compontnts/Header'
 import Footer from '../Compontnts/Footer'
 import { motion } from 'framer-motion'
-import { FaCalendarAlt, FaMapMarkerAlt, FaBolt, FaCrown, FaRulerVertical, FaWeightHanging, FaTrophy } from 'react-icons/fa'
-import { GiMuscleUp, GiBodyHeight } from 'react-icons/gi'
+import { FaCalendarAlt, FaMapMarkerAlt, FaBolt, FaCrown, FaTrophy } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchEvents } from '../redux/slices/eventSlice'
 import { getFullImageUrl } from '../utils/imageUtils'
@@ -39,25 +38,19 @@ const MatchDetail = () => {
     const dispatch = useDispatch()
     const { events, loading } = useSelector((state) => state.events)
 
-    // Fetch events only if not already loaded
-    useEffect(() => {
-        window.scrollTo(0, 0);
-        if (!events || events.length === 0) {
-            dispatch(fetchEvents());
-        }
-    }, [dispatch, Id]);
-
-    // ── Find match from Redux events ─────────────────────────────────────────
+    // ── ALL HOOKS MUST BE CALLED BEFORE ANY CONDITIONAL RETURNS ──────────────
+    // Find match - this runs on every render
     const findMatch = () => {
         if (!events || events.length === 0) return null;
+        
+        // First try to find the event by ID directly (since match data is at event level)
         for (const event of events) {
-            if (!event.matches?.length) continue;
-            const found = event.matches.find(m => m._id === Id || m.id === Id);
-            if (found) {
-                const p1 = found.players?.[0];
-                const p2 = found.players?.[1];
+            // Check if this event's _id matches the Id param
+            if (event._id === Id) {
+                const p1 = event.players?.[0];
+                const p2 = event.players?.[1];
                 return {
-                    ...found,
+                    ...event,
                     eventData: event,
                     player1: p1?.name || 'TBD',
                     player2: p2?.name || 'TBD',
@@ -67,7 +60,6 @@ const MatchDetail = () => {
                     player2Image: p2?.image
                         ? (p2.image.startsWith('http') ? p2.image : getFullImageUrl(p2.image))
                         : null,
-                    // Player detail stats
                     p1Stats: {
                         height: p1?.height,
                         weight: p1?.weight,
@@ -90,17 +82,62 @@ const MatchDetail = () => {
                     }
                 };
             }
+            
+            // Also check if there are matches in the matches array (for future compatibility)
+            if (event.matches?.length) {
+                const found = event.matches.find(m => m._id === Id || m.id === Id);
+                if (found) {
+                    const p1 = found.players?.[0];
+                    const p2 = found.players?.[1];
+                    return {
+                        ...found,
+                        eventData: event,
+                        player1: p1?.name || 'TBD',
+                        player2: p2?.name || 'TBD',
+                        player1Image: p1?.image
+                            ? (p1.image.startsWith('http') ? p1.image : getFullImageUrl(p1.image))
+                            : null,
+                        player2Image: p2?.image
+                            ? (p2.image.startsWith('http') ? p2.image : getFullImageUrl(p2.image))
+                            : null,
+                        p1Stats: {
+                            height: p1?.height,
+                            weight: p1?.weight,
+                            chest: p1?.chest,
+                            biceps: p1?.biceps,
+                            age: p1?.age,
+                            matchesWon: p1?.matchesWon,
+                            profession: p1?.profession,
+                            nativePlace: p1?.nativePlace,
+                        },
+                        p2Stats: {
+                            height: p2?.height,
+                            weight: p2?.weight,
+                            chest: p2?.chest,
+                            biceps: p2?.biceps,
+                            age: p2?.age,
+                            matchesWon: p2?.matchesWon,
+                            profession: p2?.profession,
+                            nativePlace: p2?.nativePlace,
+                        }
+                    };
+                }
+            }
         }
         return null;
     };
 
     const apiMatch = findMatch();
 
-    // ── Loading guards ───────────────────────────────────────────────────────
-    if (loading && (!events || events.length === 0)) return <LoadingState />;
-    if (!loading && events && events.length > 0 && !apiMatch) return <MatchNotFound />;
+    // ── useEffect hooks ──────────────────────────────────────────────────────
+    useEffect(() => {
+        window.scrollTo(0, 0);
+        if (!events || events.length === 0) {
+            dispatch(fetchEvents());
+        }
+    }, [dispatch, events]);
 
-    // ── Match data ────────────────────────────────────────────────────────────
+    // ── State hooks ──────────────────────────────────────────────────────────
     const match = apiMatch || {
         id: Id,
         player1: 'Loading...',
@@ -116,30 +153,14 @@ const MatchDetail = () => {
         },
     };
 
-    // ── Event details ────────────────────────────────────────────────────────
-    const player1Name = match.player1 || 'TBD';
-    const player2Name = match.player2 || 'TBD';
-    const player1Image = match.player1Image || fallbackPlayer1;
-    const player2Image = match.player2Image || fallbackPlayer2;
-    const p1Stats = match.p1Stats || {};
-    const p2Stats = match.p2Stats || {};
-
     const eventData = match.eventData || {};
     const eventDate = eventData.date ? new Date(eventData.date) : new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
-
-    const matchDate = eventDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    const matchDay = eventDate.toLocaleDateString('en-US', { weekday: 'short' });
-    const matchTime = eventDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-
-    const venueParts = eventData.venue?.split(',') || [];
-    const arena = venueParts[0]?.trim() || 'TBD';
-    const place = venueParts.slice(1).join(',').trim() || eventData.venue || 'TBD';
-
-    // ── Match status & countdown ─────────────────────────────────────────────
     const matchStatus = getMatchStatus(eventDate);
+    
     const [timeLeft, setTimeLeft] = useState(() => calcTimeLeft(eventDate));
     const intervalRef = useRef(null);
 
+    // ── useEffect for timer ──────────────────────────────────────────────────
     useEffect(() => {
         if (matchStatus !== 'upcoming') return;
         setTimeLeft(calcTimeLeft(eventDate));
@@ -150,6 +171,31 @@ const MatchDetail = () => {
         return () => clearInterval(intervalRef.current);
     }, [eventDate.toISOString(), matchStatus]);
 
+    // ── NOW WE CAN HAVE CONDITIONAL RETURNS ──────────────────────────────────
+    if (loading && (!events || events.length === 0)) {
+        return <LoadingState />;
+    }
+    
+    if (!loading && events && events.length > 0 && !apiMatch) {
+        return <MatchNotFound />;
+    }
+
+    // ── Event details ────────────────────────────────────────────────────────
+    const player1Name = match.player1 || 'TBD';
+    const player2Name = match.player2 || 'TBD';
+    const player1Image = match.player1Image || fallbackPlayer1;
+    const player2Image = match.player2Image || fallbackPlayer2;
+    const p1Stats = match.p1Stats || {};
+    const p2Stats = match.p2Stats || {};
+
+    const matchDate = eventDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const matchDay = eventDate.toLocaleDateString('en-US', { weekday: 'short' });
+    const matchTime = eventDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+
+    const venueParts = eventData.venue?.split(',') || [];
+    const arena = venueParts[0]?.trim() || 'TBD';
+    const place = venueParts.slice(1).join(',').trim() || eventData.venue || 'TBD';
+
     // ── Tale of the Tape rows ─────────────────────────────────────────────────
     const tapeRows = [
         { label: 'Height', p1: p1Stats.height, p2: p2Stats.height },
@@ -159,8 +205,9 @@ const MatchDetail = () => {
         { label: 'Age', p1: p1Stats.age ? `${p1Stats.age} Years` : null, p2: p2Stats.age ? `${p2Stats.age} Years` : null },
         { label: 'Matches Won', p1: p1Stats.matchesWon != null ? String(p1Stats.matchesWon) : null, p2: p2Stats.matchesWon != null ? String(p2Stats.matchesWon) : null },
         { label: 'From', p1: p1Stats.nativePlace, p2: p2Stats.nativePlace },
-    ].filter(row => row.p1 || row.p2); // only show rows that have at least one value
+    ].filter(row => row.p1 || row.p2);
 
+    // ─── Render ──────────────────────────────────────────────────────────────
     return (
         <div className="bg-[#050505] min-h-screen text-white overflow-x-hidden selection:bg-orange-600">
             <Header />
