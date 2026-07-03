@@ -31,6 +31,8 @@ const Wrestlers = () => {
     const transformedPlayers = players?.map((player, index) => {
 
         let category = "All";
+
+        console.log("Player matchesWon:", player); // Debugging line
         const totalScore = player.matchesWon || 0;
 
         if (totalScore > 50) {
